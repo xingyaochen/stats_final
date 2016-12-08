@@ -17,7 +17,7 @@ library(kernlab)
 library(reshape2)
 library(ggplot2)
 data(spam)
-install.packages("GGally")
+#install.packages("GGally")
 library(GGally)
 
 ```
@@ -498,6 +498,19 @@ To help you get started, here are some questions you might consider exploring:
 
 - Examine SQF rates by borough.  Compare those rates to demographic data available from the US Census Bureau.  Are people stopped in proportion to the demographic characteristics of the area?  Are they frisked in proportion to the demographic characteristics of the area?
 
+
+
+```{r}
+sqf2015_by_borough=split(sqf2015, sqf2010$city)
+count=table(sqf2015_by_borough$BRONX$race)
+count_norm=count/sum(count)
+count_norm=data.frame(count_norm)
+names(count_norm)[1]="Race"
+ggplot(count_norm, aes(x=Race, y=Freq))+
+  geom_bar(stat="identity")+
+  theme_classic()+
+  theme(axis.text.x = element_text(angle = 70, hjust = 1, size = rel(0.7) ))
+```
 4. **Peer Evaluation - Due Tuesday December 13 by 5PM - 25\% of Grade**
 
 You will evaluate yourself and your teammates on the following axes:
