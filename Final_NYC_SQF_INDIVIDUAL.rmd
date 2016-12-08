@@ -384,15 +384,41 @@ want to throw out the extraneous data first.
 
 **Solution**
 ```{r}
-sqf2010=sqf2010[sqf2010$age<100,]
-sqf2010=sqf2010[sqf2010$age>0,]
-qqplot(sqf2010$age[sqf2010$sex=="F"], sqf2010$age[sqf2010$sex=="M"],
-       ylab="Male Age", xlab="Female Age")
+#throw out outliers
+AllAge <- sqf2010[sqf2010$age <110,]
+
+#subset F and M
+MaleAge <- AllAge$age[AllAge$sex == "M"]
+FemaleAge <- AllAge$age[AllAge$sex == "F"]
+
+par(mfrow=c(1,2))
+#qqnorm plots for normality
+qqnorm(MaleAge, main = "MaleAge QQ Plot without outliers")
+qqline(MaleAge)
+qqnorm(FemaleAge, main = "FemaleAge QQ Plot without outliers")
+qqline(FemaleAge)
+
+
+
+qqplot(MaleAge,FemaleAge, main = "QQ Plot of Men vs Women Ages")
+abline(0,1)
+
+qqplot(MaleAge,AllAge , main= "QQ Plot of Men vs All Ages")
 abline(0,1)
 
 ```
 
-The distributions are approximately the same, because the `qqplot` results yielded points that fall pretty closely on the $y=x$ line. 
+
+The distribution of ages for male suspects with the outliers included is somewhat normal in the middle, but it is pretty messy and is not a very good QQ plot (not a straight line). 
+The same follows for the distribution of ages for female suspects with the outliers included in the data. 
+However, when the outliers are removed, then the QQ-Plot for both the distribution of both male and female ages are reasonably normal. We know this, because the QQ plots without the outliers are reasonably straight linear excluding the sides of the graph. Creating a QQ Plot of Male ages vs Female ages, we get a very linear line, showing that the male and female distributions are in fact, very similar! Comparing the male distribution of ages against the age distribution of the entire population also yields a linear plot, showing that the distributions are very similar!
+
+
+
+
+
+
+The distributions between are approximately the same, because the `qqplot` results yielded points that fall pretty closely on the $y=x$ line. 
 
 
 iv. Find the probability, with a 95\% confidence interval,
@@ -400,9 +426,6 @@ that a suspect was frisked (a) for the entire population in 2015, and (b)
 for suspects in 2015 who refused to provide identification, and determine whether suspects who refused to
 provide identification had a different probability of being frisked than the population
 at large.
-
-```{r}
-mean(sqf2015$frisked)
 
 ```{r, eval=T}
 frisked=sqf2015$frisked
