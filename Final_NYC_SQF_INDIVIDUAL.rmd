@@ -398,12 +398,10 @@ qqline(MaleAge)
 qqnorm(FemaleAge, main = "FemaleAge QQ Plot without outliers")
 qqline(FemaleAge)
 
-
-
 qqplot(MaleAge,FemaleAge, main = "QQ Plot of Men vs Women Ages")
 abline(0,1)
 
-qqplot(MaleAge,AllAge , main= "QQ Plot of Men vs All Ages")
+qqplot(MaleAge,AllAge$age , main= "QQ Plot of Men vs All Ages")
 abline(0,1)
 
 ```
@@ -415,10 +413,7 @@ However, when the outliers are removed, then the QQ-Plot for both the distributi
 
 
 
-
-
-
-The distributions between are approximately the same, because the `qqplot` results yielded points that fall pretty closely on the $y=x$ line. 
+The distributions between Females and Males are approximately the same, because the `qqplot` results yielded points that fall pretty closely on the $y=x$ line. 
 
 
 iv. Find the probability, with a 95\% confidence interval,
