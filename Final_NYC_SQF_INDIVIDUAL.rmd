@@ -17,7 +17,7 @@ library(kernlab)
 library(reshape2)
 library(ggplot2)
 data(spam)
-#install.packages("GGally")
+install.packages("GGally")
 library(GGally)
 
 ```
