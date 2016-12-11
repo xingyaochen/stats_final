@@ -546,31 +546,80 @@ To help you get started, here are some questions you might consider exploring:
 
 
 
-```{r}
+```{r, eval=T, plot=T}
 sqf2010$race=gsub("BLACK-","",sqf2010$race)
+sqf2010$race=gsub("WHITE-","",sqf2010$race)
 sqf2010_by_borough=split(sqf2010, sqf2010$city)
+races=unique(sqf2010$race)
+
 count=table(sqf2010_by_borough$BRONX$race)
-count_norm=count/sum(count)
-count_norm=data.frame(count_norm)
-count_norm$which="SQF"
+sqfBronx=100*count/sum(count)
+sqfBronx=data.frame(sqfBronx)
+sqfBronx$which="SQF"
+names(sqfBronx)[1]="Race"
+
+count=table(sqf2010_by_borough$BROOKLYN$race)
+sqfBrooklyn=100*count/sum(count)
+sqfBrooklyn=data.frame(sqfBrooklyn)
+sqfBrooklyn$which="SQF"
+names(sqfBrooklyn)[1]="Race"
+
+count=table(sqf2010_by_borough$MANHATTAN$race)
+sqfMan=100*count/sum(count)
+sqfMan=data.frame(sqfMan)
+sqfMan$which="SQF"
+names(sqfMan)[1]="Race"
+
+count=table(sqf2010_by_borough$QUEENS$race)
+sqfQueens=100*count/sum(count)
+sqfQueens=data.frame(sqfQueens)
+sqfQueens$which="SQF"
+names(sqfQueens)[1]="Race"
+
+count=table(sqf2010_by_borough$`STATEN IS`$race)
+sqfStanten=100*count/sum(count)
+sqfStanten=data.frame(sqfStanten)
+sqfStanten$which="SQF"
+names(sqfStanten)[1]="Race"
 
 
-races=unique(sqf2015$race)
-bronx=data.frame(10.9,30.1, 53.5, 0.6, 3.4,  1.3,0.2)
-bronx=races
-bronx=as.data.frame(t(bronx))
-colnames(bronx)="Freq"
-bronx$which=rep("Census", nrow(bronx))
 
-data=rbind(count_norm, bronx)
+bronx=c(10.9,30.1, 53.5, 0.6, 3.4,  1.3,0.2)
+bronxData=data.frame(Race=races, Freq=bronx, which="Census")
 
-names(count_norm)[1]="Race"
-ggplot(count_norm, aes(x=Race, y=Freq))+
-  geom_bar(stat="identity")+
-  theme_classic()+
-  theme(axis.text.x = element_text(angle = 70, hjust = 1, size = rel(0.7) ))+
-  ggtitle("Comparison of ")
+staten=c(9.5, 17.3, 64.0, 0.2, 7.4, 2.6 ,0)
+statenData=data.frame(Race=races, Freq=staten, which="Census")
 
+queens=c(19.1, 27.5, 27.6, 4.5, 22.9, 0, 0.1)
+queensData=data.frame(Race=races, Freq=queens, which="Census")
+
+man=c(12.9, 25.4, 48.0, 0.3, 11.2, 1.9, 0.1)
+manData=data.frame(Race=races, Freq=man, which="Census")
+
+
+brook=c(31.9, 19.8, 35.7, 0.4, 10.4, 1.6, 0.7)
+brookData=data.frame(Race=races, Freq=brook, which="Census")
+
+sqf_vs_staten=rbind(sqfStanten, statenData)
+sqf_vs_bronx=rbind(sqfBronx, bronxData)
+sqf_vs_queens=rbind(sqfQueens, queensData)
+sqf_vs_man=rbind(sqfMan, manData)
+sqf_vs_brook=rbind(sqfBrooklyn, brookData)
+
+
+bigL=list(Bronx=sqf_vs_bronx,Brooklyn=sqf_vs_brook,Manhattan=sqf_vs_man, Queens=sqf_vs_queens,StatenIsle=sqf_vs_staten)
+cites=names(sqf2010_by_borough)[-1]
+c=1
+for (i in bigL){
+  city=cites[c]
+  p=ggplot(i, aes(x=Race, y=Freq, fill=which))+
+    geom_bar(stat="identity", position=position_dodge())+
+    theme_classic()+
+    theme(axis.text.x = element_text(angle = 70, hjust = 1, size = rel(0.7) ))+
+    ggtitle(paste(city,"Population vs Stopped Population"))
+  plot(p)
+  c=c+1
+  }
 
 ```
 4. **Peer Evaluation - Due Tuesday December 13 by 5PM - 25\% of Grade**
