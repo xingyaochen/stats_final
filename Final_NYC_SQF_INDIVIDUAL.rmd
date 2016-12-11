@@ -366,9 +366,55 @@ results_sub=results[results$pval<1,]
 results_sub[results_sub$pval>0.4*max(results_sub$pval),]
 
 ```
-The larges difference is between WHITE and WHITE-HISPANIC, WHITE vs BLACK, and
+The largest difference is between WHITE and WHITE-HISPANIC, WHITE vs BLACK, and
 WHITE vs BLACK-HISPANIC. 
 The smallest difference is AMERICAN INDIAN/ALASKAN NATIVE vs ASIAN/PACIFIC ISLANDER, and UNKNOWN vs WHITE. 
+
+
+
+
+
+```{r}
+#split the frisked data by city
+splittedByCity=split(sqf2010$frisked, sqf2010$city)
+#forloop to find all the p-values
+results=data.frame()
+for (i in 1:length(splittedByCity)){
+  for(j in 1:length(splittedByCity)){
+    var1=names(splittedByCity)[i]
+    var2=names(splittedByCity)[j]
+    pval=t.test(splittedByCity[[i]], splittedByCity[[j]])$p.value
+    row=data.frame(var1, var2, pval)
+    results=rbind(results, row)
+  }
+}
+
+#find the groups with the largest differences
+results[results$pval==min(results$pval),]
+
+#find the groups with the smalled differences (top 60% of pvals excluding identical co)
+results_sub=results[results$pval<1,]
+results_sub[results_sub$pval>0.4*max(results_sub$pval),]
+```
+
+The largest difference is between BRONX and BROOKLYN, 
+BRONX and BROOKLYN, 
+BRONX and MANHATTAN, 
+BRONX and STATEN IS,
+BROOKLYN and QUEENS,
+MANHATTAN and QUEENS, 
+and QUEENS and STATEN IS. 
+
+
+The smallest difference is between
+BROOKLYN and MANHATTAN, 
+UNKNOW and BROOKLYN, and
+UNKNOW and STATEN IS,
+UNKNOW and MANHATTAN,
+
+
+
+
 
 
 iii. Compare the distribution of ages for male suspects in 2010 with the distribution of
@@ -501,15 +547,31 @@ To help you get started, here are some questions you might consider exploring:
 
 
 ```{r}
-sqf2015_by_borough=split(sqf2015, sqf2010$city)
-count=table(sqf2015_by_borough$BRONX$race)
+sqf2010$race=gsub("BLACK-","",sqf2010$race)
+sqf2010_by_borough=split(sqf2010, sqf2010$city)
+count=table(sqf2010_by_borough$BRONX$race)
 count_norm=count/sum(count)
 count_norm=data.frame(count_norm)
+count_norm$which="SQF"
+
+
+races=unique(sqf2015$race)
+bronx=data.frame(10.9,30.1, 53.5, 0.6, 3.4,  1.3,0.2)
+bronx=races
+bronx=as.data.frame(t(bronx))
+colnames(bronx)="Freq"
+bronx$which=rep("Census", nrow(bronx))
+
+data=rbind(count_norm, bronx)
+
 names(count_norm)[1]="Race"
 ggplot(count_norm, aes(x=Race, y=Freq))+
   geom_bar(stat="identity")+
   theme_classic()+
-  theme(axis.text.x = element_text(angle = 70, hjust = 1, size = rel(0.7) ))
+  theme(axis.text.x = element_text(angle = 70, hjust = 1, size = rel(0.7) ))+
+  ggtitle("Comparison of ")
+
+
 ```
 4. **Peer Evaluation - Due Tuesday December 13 by 5PM - 25\% of Grade**
 
