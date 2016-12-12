@@ -313,10 +313,7 @@ To answer this question, it is useful to understand how to interpret a regressio
 
 In the second part of your report, your team will investigate questions about the data that are interesting to you as a team and of some broader importance to the assessment of SQF policies.  As reiterated below in the section on Project Evaluation Criteria, you are expected to formulate clear questions that are addressable within the data set, and provide answers to those questions that are substantiated by appropriate graphical and statistical analysis.
 
-To help you get started, here are some questions you might consider exploring:
-
-
-- Read through the NYCLU report referenced below. Choose a set of claims and verify if they are substantiated in your data set.  Also explain any assumptions you need to make in order for the claims to be substantiated, and assess whether they are reasonable assumptions.  Some examples of claims you could examine include: The NYCLU stated that fewer than 0.2\% of stops led to confiscation of a weapon.  They also stated that Blacks and Latinos were stopped disproportionately more often than other races, even relative to their participation in crime (as victims or perpetrators).   (You might need to find, and cite, other crime statistics  or demographic data to help conduct your analysis.)
+The NYCLU stated that fewer than 0.2\% of stops led to confiscation of a weapon.  They also stated that Blacks and Latinos were stopped disproportionately more often than other races.
 
 - Read through articles by proponents of SQF (such as the National Review op-ed referenced below). Choose a set of claims and verify if they are substantiated in your data set.  Also explain any assumptions you need to make in order for the claims to be substantiated, and assess whether they are reasonable assumptions. An example of a claim you could examine is that the policy helps minorities because they are most likely to be living in high-crime neighborhoods and themselves be victims of violent crimes. (You might need to find, and cite, other crime statistics  or demographic data to help conduct your analysis.)
 
