@@ -322,6 +322,8 @@ To help you get started, here are some questions you might consider exploring:
 
 - Examine SQF rates by borough.  Compare those rates to demographic data available from the US Census Bureau.  Are people stopped in proportion to the demographic characteristics of the area?  Are they frisked in proportion to the demographic characteristics of the area?
 
+We examined whether people of certain races are more likely to be stopped and/or frisked than would be expected based on the demographic makeup of each borough. This question is important because stop and frisk has faced numerous accusations of racial profiling. If we find that certain racial groups are disproportionately likely to be stopped that, then our findings give support to the claim that stop and frisk unfairly targets those groups. To answer our question, we examined two sets of data. One is the 2010 US government census data for each of the five New York boroughs. We used this find the racial breakdown of population of each borough. The other data set is a collection of police filings from all of the stop-and-frisk incidents in New York in 2010. Each filing contains information on the race of the stopped individual, where the stop occurred, and whether the individual was frisked during the encounter. We used this data set to the relative frequency with which people of each race were likely to be stopped and frisked. We conducted graphical and statistical analyses to determine whether black, Hispanic, and white people were disproportionately likely to be stopped and frisked
+
 
 **Question 1:  Are people stopped in proportion to the demographic characteristics of the area?**
 
