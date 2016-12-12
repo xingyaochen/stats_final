@@ -4,13 +4,13 @@ title: 'Final Project: New York City Stop-Question-Frisk Analysis Part I: Indivi
 author: "Xingyao Chen Section 5"
 date: "Due December 5, 2016"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-knitr::opts_chunk$set(eval=FALSE)
+knitr::opts_chunk$set(eval=TRUE)
 knitr::opts_chunk$set(warning=FALSE)
 knitr::opts_chunk$set(message=FALSE)
 library(kernlab)
@@ -19,7 +19,6 @@ library(ggplot2)
 data(spam)
 #install.packages("GGally")
 library(GGally)
-
 ```
 
 **Purpose:** 
@@ -43,229 +42,6 @@ full data set at:
 http://www.nyc.gov/html/nypd/html/analysis_and_planning/stop_question_and_frisk_report.shtml.
 However, for this project, please **only use the version of the SQF data that has been
 provided for the course**.
-
-**Instructions: Individual Portion - Due in class on Tuesday December 6 - 15\% of Grade**
-
-The purpose of this individual portion is to help you get familiar with the data prior to class on Tuesday.  Class time on Tuesday, December 6 and Thursday, December 8 will be allocated for assigning teams and to work on the project in your groups.  Therefore, **attendance on these days will be mandatory and count as additional 10\% of your project grade**.
-
-Complete the following tasks on your own, using R. You do not need a formal writeup,
-but please submit your R code, either as an RMarkdown file, an R script file, or as a
-printout of your input and output from the R console.
-
-1. **Loading the Data**
-
-First, download the necessary files for the project by running
-```{r,eval=F}
-source("https://www.math.hmc.edu/m35f/FinalLoader.R")
-```
-This will download the `2010_sqf_m35.csv` and `2015_sqf_m35.csv` files, which contain
-the SQF data from 2010 and 2015, respectively, and `NewYorkSQF.R`, which contains the initial commands for getting setup.
-
-To load the data from the files into R, run the commands
-```{r,eval=T}
-sqf2010 = read.csv("2010_sqf_m35.csv")
-sqf2015 = read.csv("2015_sqf_m35.csv")
-```
-These will load the 2010 and 2015 SQF data into the data frames `sqf2010` and `sqf2015`,
-respectively. If you close R and want to reload the data, you will first want to set your
-working directory to the `Math35` folder within your `Documents` folder, which is where the
-`2010_sqf_m35.csv` and `2015_sqf_m35.csv` files are located. To do so without having
-to download the .csv files again by re-running the `source()` command above, you can
-run the following code, which is at the top of the `NewYorkSQF.R` file:
-```{r,eval=F}
-setwd('~')
-if(regexpr('Documents',getwd())==-1) {
-  if(!dir.exists('~/Documents')) dir.create('~/Documents')
-  setwd('~/Documents')
-}
-if(!dir.exists('Math35')) dir.create('Math35')
-setwd('Math35')
-```
-
-
-Below is a key for the fields (columns) in the data frame.
-
-Column name | Description
-------------|---------------------------------------------------------------
-datestop    | Date of the stop in MMDDYYYY format
-timestop    | Time of the stop in HHMM format, where HH is in 24 hour format
-sex         | Sex of the suspect
-race        | Race of the suspect
-age         | Age of the suspect
-weight      | Weight of the suspect
-haircolr    | Hair color of the suspect
-eyecolor    | Eye color of the suspect
-build       | Suspect's build
-city        | City (borough) of New York City in which stop occurred
-inside      | Stop was made inside (1) or outside (0)
-location    | Was location of the stop at a transit authority or housing authority?
-typeofid    | Type of ID provided by suspect
-perobs      | Period of observation, in minutes
-perstop     | Period of stop, in minutes
-arstmade    | Was an arrest made? (1=yes, 0=no)
-sumissue    | Was a summons issued?  (1=yes, 0=no)
-frisked     | Was the suspect frisked?  (1=yes, 0=no)
-searched    | Was the suspect searched? (1=yes, 0=no)
-contrabn    | Was contraband found on the suspect?  (1=yes, 0=no)
-radio       | Was there a radio run?  (1=yes, 0=no)
-height      | Height of the suspect, in inches
-pf          | Was physical force used by the officer (including hands, weapons drawn, baton, handcuffs, pepper spray)?  (1=yes, 0=no)
-weap        | Was a weapon (pistol, knife, assualt rifle, machine gun, or other) found on the suspect? (1=yes, 0=no)
-
-
-2. **Summarize the Data**
-
-Use the ``head``, ``summary``, and ``dim`` commands to get an initial look at the
-contents of the data.  How many entries are in the 2010 data? How many entries are in the 2015 data?  
-
-For the rest of the problems in this preliminary section, choose either the 2010
-or 2015 data. You may want to refer to Lecture 7 on Exploratory Data Analysis
-for the necessary commands to complete this section.
-
-
-```{r, eval=TRUE}
-dim(sqf2010)
-dim(sqf2015)
-```
-
-**Solution**
-There are 601285 entries in the 2010 data and 22563 in the 2015 data.
-
-3.  **Bar Plots and Box Plots**
-
-Choose at least two of the quantitative columns and make a comparison bar plot over
-the categories in another column. Repeat with box plots instead of bar plots.
-
-
-```{r}
-#subset the data
-bardata=cbind(sqf2010[,c("race", "perstop", "perobs")])
-#melt the data
-melted=melt(bardata, id.vars = "race")
-names(melted)[2]="Category"
-
-#aggregate the data to ge the mean or each race
-data=melt(acast(melted, race  ~ Category, mean))
-names(data)[2]="Category"
-
-#plot the bar plot
-ggplot(data= data, aes(x=Var1, y=value, fill=Category))+
-  geom_bar(stat="identity", position=position_dodge(), color="black")+
-  theme_classic()+
-  theme(axis.text.x = element_text(angle = 70, hjust = 1, size = rel(0.7) ))+
-  ggtitle("Mean Period of Obs and Stop for Each Race")
-
-#plot the box plot
-ggplot(data=melted, aes(x=race, y=value, fill=Category))+
-  geom_boxplot()+
-  #facet_wrap(~Category)+
-  theme(axis.text.x = element_text(angle = 70, hjust = 1, size = rel(0.7) ))+
-  ggtitle("Boxplot Period of Observations and Stop for Each Race")
-```
-4.  **Pairwise Plots**
-
-Make pairwise plots, with correlations calculated, of the quantitative columns and determine which columns (if any) seem linearly related. Use linear regression to check the strength of the relationship (see Lecture 11-12 for linear regressions).
-
-
-
-```{r}
-#define lm function for the pairwise plot (Jonathan Hayase)
-my_fn <- function(data, mapping, ...){
-  p <- ggplot(data = data, mapping = mapping) + 
-    geom_point() + 
-    geom_smooth(method=lm, fill="blue4", color="blue1", ...)
-  p
-}
-
-#remove outliers
-sqf2010=sqf2010[which(sqf2010$age<100),]
-sqf2010=sqf2010[which(sqf2010$weight<300),]
-
-#subset the data to just the quantitative data
-quant=sqf2015[,c("weight", "age", "height","perobs","perstop")]
-```
-
-```{r}
-#render the pairwise plot
-gg=ggpairs(quant, lower=list(continuous=my_fn))
-gg
-```
-
-
-
-5.  **Histograms and QQ Plots**
-
-Use histograms of the quantitative columns to determine which, if any, are normally
-distributed. Use QQ-plots to verify. You may notice that several of the columns
-have outlier points which you may want to ignore to obtain a histogram that is
-easier to read. You can use a Boolean expression to filter data so you only keep
-the reasonable data points. For example, to look at only the ages in the 2010 data
-that are below 100, we can use:
-```{r}
-par(mfrow=c(1,2))
-for(i in 1:ncol(quant)){
-  hist(quant[,i], breaks=40,main=paste("Histogram of",  names(quant)[i]))
-  qqnorm(quant[,i],  main = 
-           list(paste("Normal Q-Q Plot for", names(quant)[i]), cex=0.8))
-  qqline(quant[,i])
-}
-```
-
-
-
-6.  **Categorical Data**
-
-For non-quantitative (categorical) data, we will need another way to dissect the data based
-on categories. We can use the ``table()`` command to compare one column with another.
-Type `?table()` to see how to use the command. To compare the number of arrests in 
-2010 for each race, type:
-```{r}
-table(sqf2010$race, sqf2010$arstmade)
-table(sqf2010$race, sqf2010$city)
-table(sqf2010$race, sqf2010$typeofid)
-
-table(sqf2010$sex, sqf2010$arstmade)
-table(sqf2010$sex, sqf2010$city)
-table(sqf2010$sex, sqf2010$typeofid)
-
-table(sqf2010$sex, sqf2010$arstmade)
-table(sqf2010$sex, sqf2010$city)
-table(sqf2010$sex, sqf2010$typeofid)
-```
-
-7. **Binary Variables**
-
-Several of the non-quantitative binary variables have been expressed as 1 for "Yes"
-and "0" for no. We will see that this is convenient if we want to compare the
-results for two subgroups of the SQF data to see if they are different. For example,
-if we want to compare the arrest rates for people with gray hair versus people with
-salt and pepper hair, we can first make vectors for each subgroup that tell us
-whether each person was arrested or not.
-```{r,eval=F}
-arrests1 <- sqf2015$arstmade[sqf2015$race=="WHITE"]
-arrests2 <- sqf2015$arstmade[sqf2015$race=="BLACK"]
-```
-The means for each subgroup now represents the arrest rate for the group (why?).
-We can now use a two-sample T-test to determine if their means (= arrest rates) are
-different. Try this on the data with variables of your choice and find at least one
-pair of (binary variable and two categories) where the rates for the two groups are
-different with 95\% confidence. You may want to refer to Lecture 10 for how to
-conduct a two-sample T-test.
-
-```{r}
-#subset the data into appropiate catergories
-data1 <- sqf2010$frisked[sqf2010$race=="WHITE"]
-data2 <- sqf2010$frisked[sqf2010$race=="BLACK"]
-#do the t test
-p1=t.test(data1, data2, alternative = c("two.sided"))
-
-#repeat
-data1 <- sqf2010$pf[sqf2010$age>40]
-data2 <- sqf2010$pf[sqf2010$age<=40]
-p2=t.test(data1, data2, alternative = c("two.sided"))
-p1$p.value; p2$p.value
-```
-
 
 
 2. **Mandatory Classroom Attendance - Tuesday/Thursday December 6/8 - 10\% of Grade**
@@ -301,6 +77,9 @@ as Asian/Pacific Islander is actually Asian/Pacific Islander. What does this say
 how we utilize the `race` column of the data?
 
 ```{r}
+sqf2010=read.csv("2010_sqf_m35.csv")
+sqf2015=read.csv("2015_sqf_m35.csv")
+
 sqf2010_as=sqf2010[c(sqf2010$race=="ASIAN/PACIFIC ISLANDER"),]
 sqf2010_wh=sqf2010[c(sqf2010$race=="WHITE-HISPANIC"),]
 sqf2010_bh=sqf2010[c(sqf2010$race=="BLACK-HISPANIC"),]
@@ -373,7 +152,6 @@ The smallest difference is AMERICAN INDIAN/ALASKAN NATIVE vs ASIAN/PACIFIC ISLAN
 
 
 
-
 ```{r}
 #split the frisked data by city
 splittedByCity=split(sqf2010$frisked, sqf2010$city)
@@ -410,7 +188,7 @@ The smallest difference is between
 BROOKLYN and MANHATTAN, 
 UNKNOW and BROOKLYN, and
 UNKNOW and STATEN IS,
-UNKNOW and MANHATTAN,
+UNKNOW and MANHATTAN.
 
 
 
@@ -545,6 +323,7 @@ To help you get started, here are some questions you might consider exploring:
 - Examine SQF rates by borough.  Compare those rates to demographic data available from the US Census Bureau.  Are people stopped in proportion to the demographic characteristics of the area?  Are they frisked in proportion to the demographic characteristics of the area?
 
 
+**Question 1:  Are people stopped in proportion to the demographic characteristics of the area?**
 
 ```{r, eval=T, plot=T}
 sqf2010$race=gsub("BLACK-","",sqf2010$race)
@@ -608,12 +387,12 @@ sqf_vs_brook=rbind(sqfBrooklyn, brookData)
 
 
 bigL=list(Bronx=sqf_vs_bronx,Brooklyn=sqf_vs_brook,Manhattan=sqf_vs_man, Queens=sqf_vs_queens,StatenIsle=sqf_vs_staten)
-cites=names(sqf2010_by_borough)[-1]
+cities=names(sqf2010_by_borough)[-1]
 c=1
 for (i in bigL){
-  city=cites[c]
+  city=cities[c]
   p=ggplot(i, aes(x=Race, y=Freq, fill=which))+
-    geom_bar(stat="identity", position=position_dodge())+
+    geom_bar(stat="identity", position=position_dodge(), color="Black")+
     theme_classic()+
     theme(axis.text.x = element_text(angle = 70, hjust = 1, size = rel(0.7) ))+
     ggtitle(paste(city,"Population vs Stopped Population"))
@@ -622,6 +401,188 @@ for (i in bigL){
   }
 
 ```
+
+
+
+We can use `prop.test` to test for the significance of the difference.
+```{r, eval=T}
+pop_staten=c(nrow(sqf2010_by_borough$`STATEN IS`), 468730)
+pop_bronx=c(nrow(sqf2010_by_borough$BRONX),1385108)
+pop_man=c(nrow(sqf2010_by_borough$MANHATTAN),1585873)
+pop_queen=c(nrow(sqf2010_by_borough$QUEENS),223072)
+pop_brook=c(nrow(sqf2010_by_borough$BROOKLYN),2504710)
+pop_vectors=rbind(pop_bronx,pop_brook, pop_man, pop_queen , pop_staten)
+
+pData_black=data.frame()
+for(i in 1:length(bigL)){
+  city_data=bigL[[i]]
+  blk=city_data[city_data$Race=="BLACK",][,2]*pop_vectors[i,]/100
+  table=cbind(blk, pop_vectors[i,])
+  rownames(table)=c("SQF", "Census")
+  pval=prop.test(table, alternative="greater",correct=F)
+  pval=pval$p.value
+  pData_black=rbind(pData_black, data.frame(city=cities[i], pval=pval))
+}
+
+
+
+pData_his=data.frame()
+for(i in 1:length(bigL)){
+  city_data=bigL[[i]]
+  blk=city_data[city_data$Race=="HISPANIC",][,2]*pop_vectors[i,]/100
+  table=cbind(blk, pop_vectors[i,])
+  rownames(table)=c("SQF", "Census")
+  pval=prop.test(table, alternative="greater",correct=F)
+  pval=pval$p.value
+  pData_his=rbind(pData_his, data.frame(city=cities[i], pval=pval))
+}
+
+
+pData_white=data.frame()
+for(i in 1:length(bigL)){
+  city_data=bigL[[i]]
+  blk=city_data[city_data$Race=="WHITE",][,2]*pop_vectors[i,]/100
+  table=cbind(blk, pop_vectors[i,])
+  rownames(table)=c("SQF", "Census")
+  pval=prop.test(table, alternative="less", correct=F)
+  pval=pval$p.value
+  pData_white=rbind(pData_white, data.frame(city=cities[i], pval=pval))
+}
+
+#hypothesis test to test whether the the proportion of stopped who are black is greater than the proportion of blacks in the population, for each city
+pData_black
+
+#hypothesis test to test whether the the proportion of stopped who are hispanic is greater than the proportion of hispanics in the population, for each city
+pData_his
+
+#hypothesis test to test whether the the proportion of stopped who are black is greater than the proportion of blacks in the population, for each city
+pData_white
+
+```
+
+
+
+
+**Question 2: Are they frisked in proportion to the demographic characteristics of the area?**
+```{r}
+Freq <- (table(sqf2010$race[sqf2010$frisked & sqf2010$city == "BRONX"])*100/sum(sqf2010$frisked[sqf2010$city == "BRONX"]))
+friskData <- data.frame(Freq)
+friskData$which <- "Frisk"
+names(friskData)=names(bronxData)
+frisk_vs_bronx=rbind(friskData, bronxData)
+
+Freq <- (table(sqf2010$race[sqf2010$frisked & sqf2010$city == "STATEN IS"])*100/sum(sqf2010$frisked[sqf2010$city == "STATEN IS"]))
+friskData <- data.frame(Freq)
+friskData$which <- "Frisk"
+names(friskData)=names(bronxData)
+frisk_vs_staten=rbind(friskData, statenData)
+
+Freq <- (table(sqf2010$race[sqf2010$frisked & sqf2010$city == "QUEENS"])*100/sum(sqf2010$frisked[sqf2010$city == "QUEENS"]))
+friskData <- data.frame(Freq)
+friskData$which <- "Frisk"
+names(friskData)=names(bronxData)
+frisk_vs_queens=rbind(friskData, queensData)
+
+Freq <- (table(sqf2010$race[sqf2010$frisked & sqf2010$city == "MANHATTAN"])*100/sum(sqf2010$frisked[sqf2010$city == "MANHATTAN"]))
+friskData <- data.frame(Freq)
+friskData$which <- "Frisk"
+names(friskData)=names(bronxData)
+frisk_vs_man=rbind(friskData, manData)
+
+Freq <- (table(sqf2010$race[sqf2010$frisked & sqf2010$city == "BROOKLYN"])*100/sum(sqf2010$frisked[sqf2010$city == "BROOKLYN"]))
+friskData <- data.frame(Freq)
+friskData$which <- "Frisk"
+names(friskData)=names(bronxData)
+frisk_vs_brook=rbind(friskData, brookData)
+
+
+bigL=list(Bronx=frisk_vs_bronx,Brooklyn=frisk_vs_brook,Manhattan=frisk_vs_man, Queens=frisk_vs_queens,StatenIsle=frisk_vs_staten)
+cites=names(sqf2010_by_borough)[-1]
+c=1
+for (i in bigL){
+  city=cites[c]
+  p=ggplot(i, aes(x=Race, y=Freq, fill=which))+
+    geom_bar(stat="identity", position=position_dodge(), color="Black")+
+    theme_classic()+
+    theme(axis.text.x = element_text(angle = 70, hjust = 1, size = rel(0.7) ))+
+    ggtitle(paste(city,"Population vs Frisked Population"))
+  plot(p)
+  c=c+1
+}
+
+
+```
+
+
+
+We can use `prop.test` to test for the significance of the difference.
+```{r, eval=T}
+pop_staten=c(nrow(sqf2010_by_borough$`STATEN IS`), 468730)
+pop_bronx=c(nrow(sqf2010_by_borough$BRONX),1385108)
+pop_man=c(nrow(sqf2010_by_borough$MANHATTAN),1585873)
+pop_queen=c(nrow(sqf2010_by_borough$QUEENS),223072)
+pop_brook=c(nrow(sqf2010_by_borough$BROOKLYN),2504710)
+pop_vectors=rbind(pop_bronx,pop_brook, pop_man, pop_queen , pop_staten)
+
+pData_black=data.frame()
+for(i in 1:length(bigL)){
+  city_data=bigL[[i]]
+  blk=city_data[city_data$Race=="BLACK",][,2]*pop_vectors[i,]/100
+  table=cbind(blk, pop_vectors[i,])
+  rownames(table)=c("SQF", "Census")
+  pval=prop.test(table, alternative="greater",correct=F)
+  pval=pval$p.value
+  pData_black=rbind(pData_black, data.frame(city=cities[i], pval=pval))
+}
+
+
+
+pData_his=data.frame()
+for(i in 1:length(bigL)){
+  city_data=bigL[[i]]
+  blk=city_data[city_data$Race=="HISPANIC",][,2]*pop_vectors[i,]/100
+  table=cbind(blk, pop_vectors[i,])
+  rownames(table)=c("SQF", "Census")
+  pval=prop.test(table, alternative="greater",correct=F)
+  pval=pval$p.value
+  pData_his=rbind(pData_his, data.frame(city=cities[i], pval=pval))
+}
+
+
+pData_white=data.frame()
+for(i in 1:length(bigL)){
+  city_data=bigL[[i]]
+  blk=city_data[city_data$Race=="WHITE",][,2]*pop_vectors[i,]/100
+  table=cbind(blk, pop_vectors[i,])
+  rownames(table)=c("SQF", "Census")
+  pval=prop.test(table, alternative="less", correct=F)
+  pval=pval$p.value
+  pData_white=rbind(pData_white, data.frame(city=cities[i], pval=pval))
+}
+
+#hypothesis test to test whether the the proportion of frisked who are black is greater than the proportion of blacks in the population, for each city
+pData_black
+
+#hypothesis test to test whether the the proportion of frisked who are hispanic is greater than the proportion of hispanics in the population, for each city
+pData_his
+
+#hypothesis test to test whether the the proportion of frisked who are black is greater than the proportion of blacks in the population, for each city
+pData_white
+```
+
+
+
+
+In order to test if the difference between the percentage of people of a certain race stopped and the percentage of people of a certain race who live in that borough are drastically different, we used the `prop.test` function in R. For both the black and hispanic populations we said that our alternative hyopthesis was that the percentage of stopped people is greater than the percentage of people living in that borough. We found that the p-value calculated using this function gave us roughly zero for the percentage of stopped people who are black versus the percentage of black people in that borough. Since the p-value is less than 0.05 than we can confidently say that these two percentages are significantly different (which is a problem). The $H_0$ is rejected. Performing the same prop.test for the hispanic population of each other five boroughs, we get practically identical results, all the p-values are practically 0 (which is less than 0.05) so we can confidently say that these two percentages are significantly different for hispanics as well. As for the white population, we said the alternative hypothesis was that the percentage of stopped people who are white is less than the perentage of white people in that borough. The p-values we got for each of the five boroughs was approximately 0, rejecting our $H_0$. This means that we can say that the percentage of white people in the borough is significantly greater than the percentage of stopped people that are white.
+
+We also did the same prop.test for the percentage of people frisked in the borough versus percentage of people living in the borough. For the African American population we found that the p-value also approximated to 0 for each of the black boroughs for the some hypothesis we had above. Our results were also identical to the ones above for both Hispanics and Whites.
+
+
+After looking at all this data, we can make a few important conclusions. First, in New York City and most likely the rest of the United States, our police departments do racial profiling and stop and frisk an unproportionate amount of African American and Hispanic people. Second, there must be changes made to this problem. Some proposed changes could be a decrease in the amount of stop and frisk that police departments around the nation and more particulary, in NYC, do. In addition, racial profiling must be addressed in the education and training of police officers around the United States in order to ensure equal treatement of all citizens and residents of this country.
+
+
+
+
 4. **Peer Evaluation - Due Tuesday December 13 by 5PM - 25\% of Grade**
 
 You will evaluate yourself and your teammates on the following axes:
