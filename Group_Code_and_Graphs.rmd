@@ -1,7 +1,7 @@
 ---
 title: 'Final Project: New York City Stop-Question-Frisk Analysis'
 author: "Xingyao Chen, Sonia Sehra, Dave Makhervaks, Jenna Kahn Section 5"
-date: "Due December 5, 2016"
+date: "Due December 13, 2016"
 output:
   pdf_document: default
   html_document: default
@@ -13,6 +13,7 @@ library(captioner)
 knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_chunk$set(eval=TRUE)
 knitr::opts_chunk$set(warning=FALSE)
+knitr::opts_chunk$set(plot=FALSE)
 knitr::opts_chunk$set(message=FALSE)
 library(kernlab)
 library(reshape2)
@@ -121,7 +122,7 @@ results_sub[results_sub$pval>0.4*max(results_sub$pval),]
 
 
 **Question 3 Code**
-```{r,eval=T}
+```{r, plot=F, eval=F}
 #throw out outliers
 AllAge <- sqf2010[sqf2010$age <110,]
 
@@ -196,7 +197,7 @@ lmout
 **Question 1:  Are people stopped in proportion to the demographic characteristics of the area?**
 
 **Team-Chosen Question 1 Chunk 1 Code**
-```{r}
+```{r, plot=F}
 sqf2010$race=gsub("BLACK-","",sqf2010$race)
 sqf2010$race=gsub("WHITE-","",sqf2010$race)
 sqf2010_by_borough=split(sqf2010, sqf2010$city)
@@ -267,7 +268,7 @@ for (i in bigL){
     theme_classic()+
     theme(axis.text.x = element_text(angle = 70, hjust = 1, size = rel(0.7) ))+
     ggtitle(paste(city,"Population vs Stopped Population"))
-  plot(p)
+  #plot(p)
   c=c+1
   }
 
@@ -335,7 +336,7 @@ pData_white
 
 
 **Team-Chosen Question 2 Chunk 1 Code**
-```{r}
+```{r, plot=F}
 Freq <- (table(sqf2010$race[sqf2010$frisked & sqf2010$city == "BRONX"])*100/sum(sqf2010$frisked[sqf2010$city == "BRONX"]))
 friskData <- data.frame(Freq)
 friskData$which <- "Frisk"
@@ -377,7 +378,7 @@ for (i in bigL){
     theme_classic()+
     theme(axis.text.x = element_text(angle = 70, hjust = 1, size = rel(0.7) ))+
     ggtitle(paste(city,"Population vs Frisked Population"))
-  plot(p)
+  #plot(p)
   c=c+1
 }
 
