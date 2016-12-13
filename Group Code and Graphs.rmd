@@ -96,7 +96,7 @@ results_sub[results_sub$pval>0.4*max(results_sub$pval),]
 ```
 
 
-**Question 2 Chunk 1**
+**Question 2 Chunk 2**
 ```{r}
 #split the frisked data by city
 splittedByCity=split(sqf2010$frisked, sqf2010$city)

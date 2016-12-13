@@ -44,6 +44,7 @@ by the officer as Hispanic is actually Hispanic and the probability that someone
 as Asian/Pacific Islander is actually Asian/Pacific Islander. What does this say about
 how we utilize the `race` column of the data?
 
+R code is at Question 1 in "Group Code and Gramphs.rmd"
 
 LH=suspect is labled as Hispanic
 
@@ -74,6 +75,7 @@ ii. Compare the rates at which suspects stopped in 2010 were frisked, broken dow
 the differences in rates between the various groups statistically significant? Which borough(s)
 had the largest differences? The smallest?
 
+R code for this segment is at Question 2 Chunk 1 in "Group Code and Gramphs.rmd"
 
 The largest difference is between BRONX and BROOKLYN, 
 BRONX and BROOKLYN, 
@@ -83,6 +85,7 @@ BROOKLYN and QUEENS,
 MANHATTAN and QUEENS, 
 and QUEENS and STATEN IS. 
 
+R code for this segment is at Question 2 Chunk 2 in "Group Code and Gramphs.rmd"
 
 The smallest difference is between
 BROOKLYN and MANHATTAN, 
@@ -105,8 +108,7 @@ Type `?qqplot` for help on how to use the command.
 Note that some ages are reported as 0 or 999 if the officer did not know the age, so you may
 want to throw out the extraneous data first.
 
-
-
+R code and Graph for this segment is at Question 3 in "Group Code and Gramphs.rmd"
 
 The distribution of ages for male suspects with the outliers included is somewhat normal in the middle, but it is pretty messy and is not a very good QQ plot (not a straight line). 
 The same follows for the distribution of ages for female suspects with the outliers included in the data. 
@@ -127,12 +129,12 @@ at large.
 (a) The probability, with a 95\% confidence interval,
 that a suspect was frisked for the entire population in 2015 is `r mu` $\pm$ `r SEM`.
 
-
-
+R code for this segment is at Question 4 Chunk 1 in "Group Code and Gramphs.rmd"
 
 (b) The probability, with a 95\% confidence interval,
 that a suspect who refused to provide ID was frisked is `r mu1` $\pm$ `r SEM1`.
 
+R code for this segment is at Question 4 Chunk 2 in "Group Code and Gramphs.rmd"
 
 A two sample t-test can be used to determine whether these rates significantly differ.
 ```{r}
