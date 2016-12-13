@@ -6,7 +6,6 @@ output:
   pdf_document: default
   html_document: default
 ---
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_chunk$set(eval=TRUE)
@@ -19,6 +18,7 @@ data(spam)
 #install.packages("GGally")
 library(GGally)
 ```
+
 **Background provided by instructors:**
 
 In stop-question-frisk, a police officer is authorized to stop a pedestrian, question them, and then frisk their body searching for contraband items such as weapons or drugs.  The motivation for the policy was to prevent crimes from happening in the first place, though recent studies by the New York Civil Liberties Union suggest the policy did not achieve noticeable reductions in crime. For example, NYCLU estimates that guns were found in fewer than 0.2\% of stops.  Moreover, the policy was found to be discriminatory because Blacks and Latinos were stopped disproportionately more than their participation in crime would suggest. (Since 2014, new restrictions have limited the use of SQF, and the numbers of SQF incidents have decreased precipitously.)
@@ -44,21 +44,6 @@ by the officer as Hispanic is actually Hispanic and the probability that someone
 as Asian/Pacific Islander is actually Asian/Pacific Islander. What does this say about
 how we utilize the `race` column of the data?
 
-```{r}
-sqf2010=read.csv("2010_sqf_m35.csv")
-sqf2015=read.csv("2015_sqf_m35.csv")
-
-sqf2010_as=sqf2010[c(sqf2010$race=="ASIAN/PACIFIC ISLANDER"),]
-sqf2010_wh=sqf2010[c(sqf2010$race=="WHITE-HISPANIC"),]
-sqf2010_bh=sqf2010[c(sqf2010$race=="BLACK-HISPANIC"),]
-
-sqf2010_sub=rbind(sqf2010_as,sqf2010_wh , sqf2010_bh)
-races=sqf2010_sub$race
-
-LH=(38377+149532)/length(races)
-LA=(19630)/length(races)
-
-```
 
 LH=suspect is labled as Hispanic
 
@@ -89,59 +74,6 @@ ii. Compare the rates at which suspects stopped in 2010 were frisked, broken dow
 the differences in rates between the various groups statistically significant? Which borough(s)
 had the largest differences? The smallest?
 
-**Solution**
-```{r}
-#split the frisked data by race
-splittedByRace=split(sqf2010$frisked, sqf2010$race)
-#forloop to find all the p-values
-results=data.frame()
-for (i in 1:length(splittedByRace)){
-  for(j in 1:length(splittedByRace)){
-    var1=names(splittedByRace)[i]
-    var2=names(splittedByRace)[j]
-    pval=t.test(splittedByRace[[i]], splittedByRace[[j]])$p.value
-    row=data.frame(var1, var2, pval)
-    results=rbind(results, row)
-  }
-}
-
-#find the groups with the largest differences
-results[results$pval==min(results$pval),]
-
-#find the groups with the smalled differences (top 60% of pvals excluding identical co)
-results_sub=results[results$pval<1,]
-results_sub[results_sub$pval>0.4*max(results_sub$pval),]
-
-```
-The largest difference is between WHITE and WHITE-HISPANIC, WHITE vs BLACK, and
-WHITE vs BLACK-HISPANIC. 
-The smallest difference is AMERICAN INDIAN/ALASKAN NATIVE vs ASIAN/PACIFIC ISLANDER, and UNKNOWN vs WHITE. 
-
-
-
-
-```{r}
-#split the frisked data by city
-splittedByCity=split(sqf2010$frisked, sqf2010$city)
-#forloop to find all the p-values
-results=data.frame()
-for (i in 1:length(splittedByCity)){
-  for(j in 1:length(splittedByCity)){
-    var1=names(splittedByCity)[i]
-    var2=names(splittedByCity)[j]
-    pval=t.test(splittedByCity[[i]], splittedByCity[[j]])$p.value
-    row=data.frame(var1, var2, pval)
-    results=rbind(results, row)
-  }
-}
-
-#find the groups with the largest differences
-results[results$pval==min(results$pval),]
-
-#find the groups with the smalled differences (top 60% of pvals excluding identical co)
-results_sub=results[results$pval<1,]
-results_sub[results_sub$pval>0.4*max(results_sub$pval),]
-```
 
 The largest difference is between BRONX and BROOKLYN, 
 BRONX and BROOKLYN, 
@@ -174,29 +106,6 @@ Note that some ages are reported as 0 or 999 if the officer did not know the age
 want to throw out the extraneous data first.
 
 
-**Solution**
-```{r}
-#throw out outliers
-AllAge <- sqf2010[sqf2010$age <110,]
-
-#subset F and M
-MaleAge <- AllAge$age[AllAge$sex == "M"]
-FemaleAge <- AllAge$age[AllAge$sex == "F"]
-
-par(mfrow=c(1,2))
-#qqnorm plots for normality
-qqnorm(MaleAge, main = "MaleAge QQ Plot without outliers")
-qqline(MaleAge)
-qqnorm(FemaleAge, main = "FemaleAge QQ Plot without outliers")
-qqline(FemaleAge)
-
-qqplot(MaleAge,FemaleAge, main = "QQ Plot of Men vs Women Ages")
-abline(0,1)
-
-qqplot(MaleAge,AllAge$age , main= "QQ Plot of Men vs All Ages")
-abline(0,1)
-
-```
 
 
 The distribution of ages for male suspects with the outliers included is somewhat normal in the middle, but it is pretty messy and is not a very good QQ plot (not a straight line). 
@@ -214,22 +123,12 @@ for suspects in 2015 who refused to provide identification, and determine whethe
 provide identification had a different probability of being frisked than the population
 at large.
 
-```{r, eval=T}
-frisked=sqf2015$frisked
-mu=mean(frisked)
-SEM=1.96*sd(frisked)/sqrt(length(frisked))
-mu;SEM
-```
+
 (a) The probability, with a 95\% confidence interval,
 that a suspect was frisked for the entire population in 2015 is `r mu` $\pm$ `r SEM`.
 
 
-```{r, eval=T}
-frisked_id=frisked[sqf2015$typeofid=="REFUSED"]
-mu1=mean(frisked_id)
-SEM1=1.96*sd(frisked_id)/sqrt(length(frisked_id))
-mu1;SEM1
-```
+
 
 (b) The probability, with a 95\% confidence interval,
 that a suspect who refused to provide ID was frisked is `r mu1` $\pm$ `r SEM1`.
@@ -254,20 +153,7 @@ affect the length of the stop? Recall that $R^2 = \frac{SSR}{SST}$. How much of
 the variability in `perstop` is due to the explanatory variables you have selected?
 Why does this make sense?
 
-```{r}
-sqf2010=sqf2010[sqf2010$perstop<60,]
 
-lmdata=sqf2010[, c("arstmade", "searched", "inside", "sumissue", "frisked", "weap", 
-                   "contrabn", "radio", "pf")]
-mod=list()
-lmout=data.frame()
-for (i in names(lmdata)){
-  mod[[i]]=summary(lm(sqf2010$perstop~as.factor(lmdata[,i])))
-  row=data.frame(i, mod[[i]]$r.squared)
-  lmout=rbind(lmout, row)
-}
-lmout
-```
 
 The $R^2$ values indicate that the linear models are a poor fit for the data. 
 All of the $p$-values are below $0.05$. 
@@ -286,250 +172,14 @@ We examined whether people of certain races are more likely to be stopped and/or
 
 **Question 1:  Are people stopped in proportion to the demographic characteristics of the area?**
 
-```{r, eval=T, plot=T}
-sqf2010$race=gsub("BLACK-","",sqf2010$race)
-sqf2010$race=gsub("WHITE-","",sqf2010$race)
-sqf2010_by_borough=split(sqf2010, sqf2010$city)
-races=unique(sqf2010$race)
-
-count=table(sqf2010_by_borough$BRONX$race)
-sqfBronx=100*count/sum(count)
-sqfBronx=data.frame(sqfBronx)
-sqfBronx$which="SQF"
-names(sqfBronx)[1]="Race"
-
-count=table(sqf2010_by_borough$BROOKLYN$race)
-sqfBrooklyn=100*count/sum(count)
-sqfBrooklyn=data.frame(sqfBrooklyn)
-sqfBrooklyn$which="SQF"
-names(sqfBrooklyn)[1]="Race"
-
-count=table(sqf2010_by_borough$MANHATTAN$race)
-sqfMan=100*count/sum(count)
-sqfMan=data.frame(sqfMan)
-sqfMan$which="SQF"
-names(sqfMan)[1]="Race"
-
-count=table(sqf2010_by_borough$QUEENS$race)
-sqfQueens=100*count/sum(count)
-sqfQueens=data.frame(sqfQueens)
-sqfQueens$which="SQF"
-names(sqfQueens)[1]="Race"
-
-count=table(sqf2010_by_borough$`STATEN IS`$race)
-sqfStanten=100*count/sum(count)
-sqfStanten=data.frame(sqfStanten)
-sqfStanten$which="SQF"
-names(sqfStanten)[1]="Race"
-
-
-
-bronx=c(10.9,30.1, 53.5, 0.6, 3.4,  1.3,0.2)
-bronxData=data.frame(Race=races, Freq=bronx, which="Census")
-
-staten=c(9.5, 17.3, 64.0, 0.2, 7.4, 2.6 ,0)
-statenData=data.frame(Race=races, Freq=staten, which="Census")
-
-queens=c(19.1, 27.5, 27.6, 4.5, 22.9, 0, 0.1)
-queensData=data.frame(Race=races, Freq=queens, which="Census")
-
-man=c(12.9, 25.4, 48.0, 0.3, 11.2, 1.9, 0.1)
-manData=data.frame(Race=races, Freq=man, which="Census")
-
-
-brook=c(31.9, 19.8, 35.7, 0.4, 10.4, 1.6, 0.7)
-brookData=data.frame(Race=races, Freq=brook, which="Census")
-
-sqf_vs_staten=rbind(sqfStanten, statenData)
-sqf_vs_bronx=rbind(sqfBronx, bronxData)
-sqf_vs_queens=rbind(sqfQueens, queensData)
-sqf_vs_man=rbind(sqfMan, manData)
-sqf_vs_brook=rbind(sqfBrooklyn, brookData)
-
-
-bigL=list(Bronx=sqf_vs_bronx,Brooklyn=sqf_vs_brook,Manhattan=sqf_vs_man, Queens=sqf_vs_queens,StatenIsle=sqf_vs_staten)
-cities=names(sqf2010_by_borough)[-1]
-c=1
-for (i in bigL){
-  city=cities[c]
-  p=ggplot(i, aes(x=Race, y=Freq, fill=which))+
-    geom_bar(stat="identity", position=position_dodge(), color="Black")+
-    theme_classic()+
-    theme(axis.text.x = element_text(angle = 70, hjust = 1, size = rel(0.7) ))+
-    ggtitle(paste(city,"Population vs Stopped Population"))
-  plot(p)
-  c=c+1
-  }
-
-```
-
-
 
 We can use `prop.test` to test for the significance of the difference.
-```{r, eval=T}
-pop_staten=c(nrow(sqf2010_by_borough$`STATEN IS`), 468730)
-pop_bronx=c(nrow(sqf2010_by_borough$BRONX),1385108)
-pop_man=c(nrow(sqf2010_by_borough$MANHATTAN),1585873)
-pop_queen=c(nrow(sqf2010_by_borough$QUEENS),223072)
-pop_brook=c(nrow(sqf2010_by_borough$BROOKLYN),2504710)
-pop_vectors=rbind(pop_bronx,pop_brook, pop_man, pop_queen , pop_staten)
-
-pData_black=data.frame()
-for(i in 1:length(bigL)){
-  city_data=bigL[[i]]
-  blk=city_data[city_data$Race=="BLACK",][,2]*pop_vectors[i,]/100
-  table=cbind(blk, pop_vectors[i,])
-  rownames(table)=c("SQF", "Census")
-  pval=prop.test(table, alternative="greater",correct=F)
-  pval=pval$p.value
-  pData_black=rbind(pData_black, data.frame(city=cities[i], pval=pval))
-}
-
-
-
-pData_his=data.frame()
-for(i in 1:length(bigL)){
-  city_data=bigL[[i]]
-  blk=city_data[city_data$Race=="HISPANIC",][,2]*pop_vectors[i,]/100
-  table=cbind(blk, pop_vectors[i,])
-  rownames(table)=c("SQF", "Census")
-  pval=prop.test(table, alternative="greater",correct=F)
-  pval=pval$p.value
-  pData_his=rbind(pData_his, data.frame(city=cities[i], pval=pval))
-}
-
-
-pData_white=data.frame()
-for(i in 1:length(bigL)){
-  city_data=bigL[[i]]
-  blk=city_data[city_data$Race=="WHITE",][,2]*pop_vectors[i,]/100
-  table=cbind(blk, pop_vectors[i,])
-  rownames(table)=c("SQF", "Census")
-  pval=prop.test(table, alternative="less", correct=F)
-  pval=pval$p.value
-  pData_white=rbind(pData_white, data.frame(city=cities[i], pval=pval))
-}
-
-#hypothesis test to test whether the the proportion of stopped who are black is greater than the proportion of blacks in the population, for each city
-pData_black
-
-#hypothesis test to test whether the the proportion of stopped who are hispanic is greater than the proportion of hispanics in the population, for each city
-pData_his
-
-#hypothesis test to test whether the the proportion of stopped who are black is greater than the proportion of blacks in the population, for each city
-pData_white
-
-```
-
-
-
 
 **Question 2: Are they frisked in proportion to the demographic characteristics of the area?**
-```{r}
-Freq <- (table(sqf2010$race[sqf2010$frisked & sqf2010$city == "BRONX"])*100/sum(sqf2010$frisked[sqf2010$city == "BRONX"]))
-friskData <- data.frame(Freq)
-friskData$which <- "Frisk"
-names(friskData)=names(bronxData)
-frisk_vs_bronx=rbind(friskData, bronxData)
-
-Freq <- (table(sqf2010$race[sqf2010$frisked & sqf2010$city == "STATEN IS"])*100/sum(sqf2010$frisked[sqf2010$city == "STATEN IS"]))
-friskData <- data.frame(Freq)
-friskData$which <- "Frisk"
-names(friskData)=names(bronxData)
-frisk_vs_staten=rbind(friskData, statenData)
-
-Freq <- (table(sqf2010$race[sqf2010$frisked & sqf2010$city == "QUEENS"])*100/sum(sqf2010$frisked[sqf2010$city == "QUEENS"]))
-friskData <- data.frame(Freq)
-friskData$which <- "Frisk"
-names(friskData)=names(bronxData)
-frisk_vs_queens=rbind(friskData, queensData)
-
-Freq <- (table(sqf2010$race[sqf2010$frisked & sqf2010$city == "MANHATTAN"])*100/sum(sqf2010$frisked[sqf2010$city == "MANHATTAN"]))
-friskData <- data.frame(Freq)
-friskData$which <- "Frisk"
-names(friskData)=names(bronxData)
-frisk_vs_man=rbind(friskData, manData)
-
-Freq <- (table(sqf2010$race[sqf2010$frisked & sqf2010$city == "BROOKLYN"])*100/sum(sqf2010$frisked[sqf2010$city == "BROOKLYN"]))
-friskData <- data.frame(Freq)
-friskData$which <- "Frisk"
-names(friskData)=names(bronxData)
-frisk_vs_brook=rbind(friskData, brookData)
-
-
-bigL=list(Bronx=frisk_vs_bronx,Brooklyn=frisk_vs_brook,Manhattan=frisk_vs_man, Queens=frisk_vs_queens,StatenIsle=frisk_vs_staten)
-cites=names(sqf2010_by_borough)[-1]
-c=1
-for (i in bigL){
-  city=cites[c]
-  p=ggplot(i, aes(x=Race, y=Freq, fill=which))+
-    geom_bar(stat="identity", position=position_dodge(), color="Black")+
-    theme_classic()+
-    theme(axis.text.x = element_text(angle = 70, hjust = 1, size = rel(0.7) ))+
-    ggtitle(paste(city,"Population vs Frisked Population"))
-  plot(p)
-  c=c+1
-}
-
-
-```
-
 
 
 We can use `prop.test` to test for the significance of the difference.
-```{r, eval=T}
-pop_staten=c(nrow(sqf2010_by_borough$`STATEN IS`), 468730)
-pop_bronx=c(nrow(sqf2010_by_borough$BRONX),1385108)
-pop_man=c(nrow(sqf2010_by_borough$MANHATTAN),1585873)
-pop_queen=c(nrow(sqf2010_by_borough$QUEENS),223072)
-pop_brook=c(nrow(sqf2010_by_borough$BROOKLYN),2504710)
-pop_vectors=rbind(pop_bronx,pop_brook, pop_man, pop_queen , pop_staten)
 
-pData_black=data.frame()
-for(i in 1:length(bigL)){
-  city_data=bigL[[i]]
-  blk=city_data[city_data$Race=="BLACK",][,2]*pop_vectors[i,]/100
-  table=cbind(blk, pop_vectors[i,])
-  rownames(table)=c("SQF", "Census")
-  pval=prop.test(table, alternative="greater",correct=F)
-  pval=pval$p.value
-  pData_black=rbind(pData_black, data.frame(city=cities[i], pval=pval))
-}
-
-
-
-pData_his=data.frame()
-for(i in 1:length(bigL)){
-  city_data=bigL[[i]]
-  blk=city_data[city_data$Race=="HISPANIC",][,2]*pop_vectors[i,]/100
-  table=cbind(blk, pop_vectors[i,])
-  rownames(table)=c("SQF", "Census")
-  pval=prop.test(table, alternative="greater",correct=F)
-  pval=pval$p.value
-  pData_his=rbind(pData_his, data.frame(city=cities[i], pval=pval))
-}
-
-
-pData_white=data.frame()
-for(i in 1:length(bigL)){
-  city_data=bigL[[i]]
-  blk=city_data[city_data$Race=="WHITE",][,2]*pop_vectors[i,]/100
-  table=cbind(blk, pop_vectors[i,])
-  rownames(table)=c("SQF", "Census")
-  pval=prop.test(table, alternative="less", correct=F)
-  pval=pval$p.value
-  pData_white=rbind(pData_white, data.frame(city=cities[i], pval=pval))
-}
-
-#hypothesis test to test whether the the proportion of frisked who are black is greater than the proportion of blacks in the population, for each city
-pData_black
-
-#hypothesis test to test whether the the proportion of frisked who are hispanic is greater than the proportion of hispanics in the population, for each city
-pData_his
-
-#hypothesis test to test whether the the proportion of frisked who are black is greater than the proportion of blacks in the population, for each city
-pData_white
-```
 **Analysis**
 
 In order to test if the difference between the percentage of people of a certain race stopped and the percentage of people of a certain race who live in that borough are drastically different, we used the `prop.test` function in R. For both the black and hispanic populations we said that our alternative hyopthesis was that the percentage of stopped people is greater than the percentage of people living in that borough. We found that the p-value calculated using this function gave us roughly zero for the percentage of stopped people who are black versus the percentage of black people in that borough. Since the p-value is less than 0.05 than we can confidently say that these two percentages are significantly different (which is a problem). The $H_0$ is rejected. Performing the same prop.test for the hispanic population of each other five boroughs, we get practically identical results, all the p-values are practically 0 (which is less than 0.05) so we can confidently say that these two percentages are significantly different for hispanics as well. As for the white population, we said the alternative hypothesis was that the percentage of stopped people who are white is less than the perentage of white people in that borough. The p-values we got for each of the five boroughs was approximately 0, rejecting our $H_0$. This means that we can say that the percentage of white people in the borough is significantly greater than the percentage of stopped people that are white.
