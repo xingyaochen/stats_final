@@ -1,7 +1,7 @@
 ---
 title: 'Final Project: New York City Stop-Question-Frisk Analysis Part I: Individual
   Analysis'
-author: "Xingyao Chen Section 5"
+author: "Xingyao Chen, Sonia Sehra, Dave Makhervaks, Jenna Kahn Section 5"
 date: "Due December 5, 2016"
 output:
   pdf_document: default
@@ -90,7 +90,6 @@ results[results$pval==min(results$pval),]
 
 #find the groups with the smalled differences (top 60% of pvals excluding identical co)
 results_sub=results[results$pval<1,]
-tbls("T=test fot the Differences in Stopped Rates Between Races")
 results_sub[results_sub$pval>0.4*max(results_sub$pval),]
 
 ```
@@ -197,6 +196,7 @@ lmout
 
 **Question 1:  Are people stopped in proportion to the demographic characteristics of the area?**
 
+**Team-Chosen Question 1 Chunk 1**
 ```{r}
 sqf2010$race=gsub("BLACK-","",sqf2010$race)
 sqf2010$race=gsub("WHITE-","",sqf2010$race)
@@ -274,7 +274,7 @@ for (i in bigL){
 
 ```
 
-
+**Team-Chosen Question 1 Chunk 2**
 
 ```{r}
 pop_staten=c(nrow(sqf2010_by_borough$`STATEN IS`), 468730)
@@ -334,7 +334,8 @@ pData_white
 
 
 
-**Question 2: Are they frisked in proportion to the demographic characteristics of the area?**
+
+**Team-Chosen Question 2 Chunk 1**
 ```{r}
 Freq <- (table(sqf2010$race[sqf2010$frisked & sqf2010$city == "BRONX"])*100/sum(sqf2010$frisked[sqf2010$city == "BRONX"]))
 friskData <- data.frame(Freq)
@@ -385,6 +386,7 @@ for (i in bigL){
 ```
 
 
+**Team-Chosen Question 2 Chunk 2**
 
 ```{r}
 pop_staten=c(nrow(sqf2010_by_borough$`STATEN IS`), 468730)

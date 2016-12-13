@@ -127,21 +127,19 @@ at large.
 
 
 (a) The probability, with a 95\% confidence interval,
-that a suspect was frisked for the entire population in 2015 is `r mu` $\pm$ `r SEM`.
+that a suspect was frisked for the entire population in 2015 is 0.6761955 $\pm$ 0.006105832.
 
-R code for this segment is at Question 4 Chunk 1 in "Group Code and Gramphs.rmd"
+R code for this segment is at Question 4 Chunk 1 in "Group Code and Graphs.rmd"
 
 (b) The probability, with a 95\% confidence interval,
-that a suspect who refused to provide ID was frisked is `r mu1` $\pm$ `r SEM1`.
+that a suspect who refused to provide ID was frisked is 0.6103286 $\pm$ 0.03784224.
 
 R code for this segment is at Question 4 Chunk 2 in "Group Code and Gramphs.rmd"
 
-A two sample t-test can be used to determine whether these rates significantly differ.
-```{r}
-t.test(x = sqf2015$frisked, y = sqf2015$frisked[sqf2015$typeofid == "REFUSED"], conf.level = 0.95)
-```
 
+A two sample t-test can be used to determine whether these rates significantly differ.
 The t-test suggests there is a significant difference in the probability a suspect in general will be frisked vs. the probability a suspect who refuses to provide ID will be frisked (p < .05). 
+R code for this segment is at Question 4 Chunk 3 in "Group Code and Gramphs.rmd"
 
 
 v. For the 2010 data, decide which of the following binary factors: `arstmade`, `searched`,
@@ -161,6 +159,7 @@ The $R^2$ values indicate that the linear models are a poor fit for the data.
 All of the $p$-values are below $0.05$. 
 Not much variability is explained by the selected variables. 
 
+R code for this segment is at Question 5 in "Group Code and Gramphs.rmd"
 
 
 To answer this question, it is useful to understand how to interpret a regression model involving indicator variables.  Suppose you have an indicator variable $X$ that equals 1 when a condition is true and 0 otherwise, and you fit the following regression model: $$Y = \beta_0 + \beta_1 X + \epsilon$$  Note that when $X=0$, meaning that the condition is false, $Y = \beta_0 + \epsilon$, and when $X=1$, meaning that the condition is true, $Y = \beta_0 + \beta_1 + \epsilon$.  Therefore, $\beta_1$, the coefficient on $X$ in the regression model, gives the *average effect* that the condition has on the outcome.  That is $\beta_1$ equals the mean difference in the response when the condition is true compared to when it is false.  Our hypothesis is constructed in the same way as always: $H_0: \beta_1=0$ is the null hypothesis asserting that the condition has no effect on $Y$.  $H_a: \beta_1 \neq 0$ is the alternative hypothesis asserting that the condition has some effect on $Y$.  If the p-value on $\beta_1$ after we fit the regression model is smaller than our significance level $\alpha$, then we reject $H_0$ and conclude that the condition being true has a statistically significant effect on the value of $Y$.
@@ -175,12 +174,12 @@ We examined whether people of certain races are more likely to be stopped and/or
 **Question 1:  Are people stopped in proportion to the demographic characteristics of the area?**
 
 
-We can use `prop.test` to test for the significance of the difference.
+R code for this segment is at Team-Chosen Question 1 Chunks 1 and 2 in "Group Code and Graphs.rmd"
 
 **Question 2: Are they frisked in proportion to the demographic characteristics of the area?**
 
 
-We can use `prop.test` to test for the significance of the difference.
+R code for this segment is at Team-Chosen Question 2 Chunks 1 and 2 in "Group Code and Graphs.rmd"
 
 **Analysis**
 
