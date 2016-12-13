@@ -1,6 +1,5 @@
 ---
-title: 'Final Project: New York City Stop-Question-Frisk Analysis Part I: Individual
-  Analysis'
+title: 'Final Project: New York City Stop-Question-Frisk Analysis'
 author: "Xingyao Chen, Sonia Sehra, Dave Makhervaks, Jenna Kahn Section 5"
 date: "Due December 5, 2016"
 output:
@@ -26,7 +25,7 @@ figs <- captioner(prefix="Figure")
 tbls <- captioner(prefix="Table")
 ```
 
-**Question 1**
+**Question 1 Code**
 ```{r eval=TRUE}
 sqf2010=read.csv("2010_sqf_m35.csv")
 sqf2015=read.csv("2015_sqf_m35.csv")
@@ -68,7 +67,7 @@ P(H|LH)&=0.997\\
 P(A|LA)&=0.4964\\
 \end{align*}
 
-**Question 2 Chunk 1**
+**Question 2 Chunk 1 Code**
 ```{r , eval=T}
 
 #split the frisked data by race
@@ -95,7 +94,7 @@ results_sub[results_sub$pval>0.4*max(results_sub$pval),]
 ```
 
 
-**Question 2 Chunk 2**
+**Question 2 Chunk 2 Code**
 ```{r}
 #split the frisked data by city
 splittedByCity=split(sqf2010$frisked, sqf2010$city)
@@ -121,7 +120,7 @@ results_sub[results_sub$pval>0.4*max(results_sub$pval),]
 
 
 
-**Question 3**
+**Question 3 Code**
 ```{r,eval=T}
 #throw out outliers
 AllAge <- sqf2010[sqf2010$age <110,]
@@ -147,7 +146,7 @@ abline(0,1)
 
 
 
-**Question 4 Chunk 1**
+**Question 4 Chunk 1 Code**
 ```{r, eval=T}
 frisked=sqf2015$frisked
 mu=mean(frisked)
@@ -157,7 +156,7 @@ mu;SEM
 (a) The probability, with a 95\% confidence interval,
 that a suspect was frisked for the entire population in 2015 is `r mu` $\pm$ `r SEM`.
 
-**Question 4 Chunk 2**
+**Question 4 Chunk 2 Code**
 ```{r, eval=T}
 frisked_id=frisked[sqf2015$typeofid=="REFUSED"]
 mu1=mean(frisked_id)
@@ -168,14 +167,14 @@ mu1;SEM1
 (b) The probability, with a 95\% confidence interval,
 that a suspect who refused to provide ID was frisked is `r mu1` $\pm$ `r SEM1`.
 
-**Question 4 Chunk 3**
+**Question 4 Chunk 3 Code**
 ```{r}
 t.test(x = sqf2015$frisked, y = sqf2015$frisked[sqf2015$typeofid == "REFUSED"], conf.level = 0.95)
 ```
 
 
 
-**Question 5**
+**Question 5 Code**
 ```{r,eval=T}
 sqf2010=sqf2010[sqf2010$perstop<60,]
 
@@ -196,7 +195,7 @@ lmout
 
 **Question 1:  Are people stopped in proportion to the demographic characteristics of the area?**
 
-**Team-Chosen Question 1 Chunk 1**
+**Team-Chosen Question 1 Chunk 1 Code**
 ```{r}
 sqf2010$race=gsub("BLACK-","",sqf2010$race)
 sqf2010$race=gsub("WHITE-","",sqf2010$race)
@@ -274,7 +273,7 @@ for (i in bigL){
 
 ```
 
-**Team-Chosen Question 1 Chunk 2**
+**Team-Chosen Question 1 Chunk 2 Code**
 
 ```{r}
 pop_staten=c(nrow(sqf2010_by_borough$`STATEN IS`), 468730)
@@ -335,7 +334,7 @@ pData_white
 
 
 
-**Team-Chosen Question 2 Chunk 1**
+**Team-Chosen Question 2 Chunk 1 Code**
 ```{r}
 Freq <- (table(sqf2010$race[sqf2010$frisked & sqf2010$city == "BRONX"])*100/sum(sqf2010$frisked[sqf2010$city == "BRONX"]))
 friskData <- data.frame(Freq)
@@ -386,7 +385,7 @@ for (i in bigL){
 ```
 
 
-**Team-Chosen Question 2 Chunk 2**
+**Team-Chosen Question 2 Chunk 2 Code**
 
 ```{r}
 pop_staten=c(nrow(sqf2010_by_borough$`STATEN IS`), 468730)
